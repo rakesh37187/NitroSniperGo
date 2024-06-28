@@ -1,4 +1,4 @@
-FROM golang:alpine3.14 AS builder
+FROM golang:1.20-alpine3.18 AS builder
 
 WORKDIR app
 
@@ -8,7 +8,7 @@ RUN apk add --no-cache gcc libc-dev alsa-lib-dev
 RUN go mod download \
 	&& go build
 
-FROM alpine:3.14 AS final
+FROM golang:1.20-alpine3.18 AS final
 
 WORKDIR app
 
