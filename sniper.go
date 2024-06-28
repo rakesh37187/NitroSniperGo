@@ -168,6 +168,7 @@ func inviteTimerEnd() {
 func run(token string, finished chan bool, index int) {
 	currentToken = token
 	dg, err := discordgo.New(token)
+	dg.Identify.Intents |= discordgo.IntentMessageContent
 	if err != nil {
 		fatalWithTime("[x] Error creating Discord session for " + token + "," + err.Error())
 	} else {
@@ -177,9 +178,6 @@ func run(token string, finished chan bool, index int) {
 		} else {
 			nbServers += len(dg.State.Guilds)
 			dg.AddHandler(messageCreate)
-			if settings.Status.Alts != "" {
-				_, _ = dg.UserUpdateStatus(discordgo.Status(settings.Status.Alts))
-			}
 		}
 	}
 	if index == len(settings.Tokens.Alts)-1 {
@@ -230,7 +228,7 @@ func main() {
 
 	if settings.Nitro.MainSniper {
 		dg, err = discordgo.New(settings.Tokens.Main)
-
+		dg.Identify.Intents |= discordgo.IntentMessageContent
 		if err != nil {
 			fatalWithTime("[x] Error creating Discord session for " + settings.Tokens.Main + "," + err.Error())
 			time.Sleep(4 * time.Second)
@@ -245,10 +243,6 @@ func main() {
 		}
 
 		dg.AddHandler(messageCreate)
-
-		if settings.Status.Main != "" {
-			_, _ = dg.UserUpdateStatus(discordgo.Status(settings.Status.Main))
-		}
 
 		nbServers += len(dg.State.Guilds)
 	}
